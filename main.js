@@ -1,13 +1,20 @@
 console.log("JS is Connected");
 
-window.addEventListener('keydown', function(event){
-    // console.log(event.keyCode);
+function removeTransition(e) {
+  if (e.propertyName !== 'transform') return;
+  e.target.classList.remove('playing');
+}
 
-    const audio = document.querySelector(`audio[data-key="${event.keyCode}"]`);
-    
+function playSound(e) {
+  const audio = document.querySelector(`audio[data-key="${e.keyCode}"]`);
+  const key = document.querySelector(`div[data-key="${e.keyCode}"]`);
+  if (!audio) return;
 
-    if (!audio) return; //Stopping the function
+  key.classList.add('playing');
+  audio.currentTime = 0;
+  audio.play();
+}
 
-    audio.currentTime = 0; //Rewind to the start
-    audio.play();
-});
+const keys = Array.from(document.querySelectorAll('.key'));
+keys.forEach(key => key.addEventListener('transitionend', removeTransition));
+window.addEventListener('keydown', playSound);
